@@ -114,7 +114,7 @@ else:
         end = st.date_input("Grant End Date", datetime(2026, 12, 31))
 
     with col_b:
-        st.subheader("🛡️ Benefits (Alejandra's Logic)")
+        st.subheader("🛡️ Benefits")
         ins_type = st.radio("Insurance Type", ["R - Regular & HMO", "C - CDHP"])
         med_cover = st.selectbox("Medical Cover Type", list(MEDICAL_COSTS.keys()))
         den_cover = st.selectbox("Dental Cover Type", list(DENTAL_COSTS.keys()))
