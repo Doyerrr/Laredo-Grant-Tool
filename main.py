@@ -6,19 +6,19 @@ import io
 import os
 from datetime import datetime
 
-# --- CONFIGURACIÓN DE DATOS (Basado en el correo de la Ciudad de Laredo) ---
-COSTOS_MEDICOS = {
+# --- DATA CONFIGURATION (Declaring the costs for grants) ---
+MEDICAL_COSTS = {
     "S - Employee Only": 350.00,
     "SP - Spouse + Employee": 700.00,
     "CH - Child + Employee": 600.00,
     "F - Family": 950.00
 }
-COSTOS_DENTALES = {
+DENTAL_COSTS = {
     "S - Employee Only": 25.00,
     "DD - Dental Dependent": 55.00
 }
 
-# Nombre del archivo que debes tener en tu carpeta
+# Laredo Logo file name (will be replaced to have it be used locally)
 LAREDO_LOGO = "laredo_logo.png"
 
 # 1. --- DATABASE (Security & Persistence) ---
@@ -116,8 +116,8 @@ else:
     with col_b:
         st.subheader("🛡️ Benefits (Alejandra's Logic)")
         ins_type = st.radio("Insurance Type", ["R - Regular & HMO", "C - CDHP"])
-        med_cover = st.selectbox("Medical Cover Type", list(COSTOS_MEDICOS.keys()))
-        den_cover = st.selectbox("Dental Cover Type", list(COSTOS_DENTALES.keys()))
+        med_cover = st.selectbox("Medical Cover Type", list(MEDICAL_COSTS.keys()))
+        den_cover = st.selectbox("Dental Cover Type", list(DENTAL_COSTS.keys()))
         
         # Coding Logic: Extraction of codes like 'CH' and 'DD'
         med_code = med_cover.split(" - ")[0]
@@ -135,8 +135,8 @@ else:
         total_sal_grant = sal_per_period * pay_periods
         
         # Benefits logic from master spreadsheet
-        med_total = COSTOS_MEDICOS[med_cover] * pay_periods
-        den_total = COSTOS_DENTALES[den_cover] * pay_periods
+        med_total = MEDICAL_COSTS[med_cover] * pay_periods
+        den_total = DENTAL_COSTS[den_cover] * pay_periods
         other_fringe = total_sal_grant * tax_rate
         grand_total = total_sal_grant + med_total + den_total + other_fringe
         
