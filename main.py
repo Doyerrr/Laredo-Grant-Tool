@@ -6,7 +6,7 @@ import io
 import os
 from datetime import datetime
 
-# --- DATA CONFIGURATION (Declaring the costs for grants) ---
+# Data configurations
 MEDICAL_COSTS = {
     "S - Employee Only": 350.00,
     "SP - Spouse + Employee": 700.00,
@@ -21,7 +21,7 @@ DENTAL_COSTS = {
 # Laredo Logo file name (will be replaced to have it be used locally)
 LAREDO_LOGO = "laredo_logo.png"
 
-# 1. --- DATABASE (Security & Persistence) ---
+# SQLite Database for user authentication and verification
 def init_db():
     conn = sqlite3.connect('laredo_vault.db')
     c = conn.cursor()
@@ -33,7 +33,7 @@ def init_db():
 
 init_db()
 
-# --- CUSTOM CSS (Laredo Professional Theme) ---
+# Custom CSS (Matching the Public Health Department's aesthetic
 def apply_style():
     st.markdown(f"""
         <style>
@@ -53,7 +53,7 @@ def apply_style():
         </style>
     """, unsafe_allow_html=True)
 
-# 2. --- LOGIN MANAGEMENT ---
+# Login Management
 if 'auth' not in st.session_state:
     st.session_state['auth'] = False
 
@@ -77,7 +77,7 @@ if not st.session_state['auth']:
                 st.rerun()
             else: st.error("Invalid Credentials")
 else:
-    # 3. --- MAIN INTERFACE ---
+    # Main interface
     st.set_page_config(page_title="City of Laredo Grant Tool", layout="wide")
     apply_style()
     
@@ -103,7 +103,7 @@ else:
 
     st.divider()
 
-    # Data Input
+    # User Input
     col_a, col_b = st.columns(2)
     with col_a:
         st.subheader("👤 Employee Information")
@@ -119,22 +119,22 @@ else:
         med_cover = st.selectbox("Medical Cover Type", list(MEDICAL_COSTS.keys()))
         den_cover = st.selectbox("Dental Cover Type", list(DENTAL_COSTS.keys()))
         
-        # Coding Logic: Extraction of codes like 'CH' and 'DD'
+        # Extraction of codes like 'CH' and 'DD'
         med_code = med_cover.split(" - ")[0]
         den_code = den_cover.split(" - ")[0]
         combined_code = med_code + den_code
         st.success(f"Generated Insurance Code: **{combined_code}**")
 
-    # --- CALCULATIONS ---
+    # Calculations
     days = (end - start).days
-    pay_periods = days / 14 # Calculation based on bi-weekly periods
+    pay_periods = days / 14 #  based on bi-weekly periods
     
     if days > 0:
         # Adjusted salary logic
         sal_per_period = ((salary * (1 + cola)) / 26) * fte
         total_sal_grant = sal_per_period * pay_periods
         
-        # Benefits logic from master spreadsheet
+        # Benefits logic
         med_total = MEDICAL_COSTS[med_cover] * pay_periods
         den_total = DENTAL_COSTS[den_cover] * pay_periods
         other_fringe = total_sal_grant * tax_rate
@@ -156,7 +156,7 @@ else:
         })
         st.table(df_res)
 
-        # Excel Export logic
+        # Excel Export
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
             df_res.to_excel(writer, index=False, sheet_name='Laredo_Forecast')
